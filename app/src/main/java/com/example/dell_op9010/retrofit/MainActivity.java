@@ -13,6 +13,9 @@ import com.example.dell_op9010.retrofit.Product_Retrofit.ProductRetriever;
 import com.example.dell_op9010.retrofit.Product_Retrofit.ProductRetrofit;
 import com.example.dell_op9010.retrofit.Single_Order.SingleOrderRetriever;
 import com.example.dell_op9010.retrofit.Single_Order.Single_Order;
+import com.example.dell_op9010.retrofit.product_categories_Retrofit.ProductCategory;
+import com.example.dell_op9010.retrofit.product_categories_Retrofit.Product_Categories_Retriever;
+import com.example.dell_op9010.retrofit.product_categories_Retrofit.Product_Categories_Retrofit;
 
 import java.util.List;
 
@@ -24,17 +27,74 @@ public class MainActivity extends AppCompatActivity {
     private OrderRetriever orderRetriever;
     private SingleOrderRetriever singleOrderRetriever;
     private ProductRetriever productRetriever;
+    private Product_Categories_Retriever productCategoriesRetriever;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
        // orderRetriever = ApiUtils.getOrderDetails("orders/");
-        singleOrderRetriever=ApiUtils.getSingleOrderDetails("orders/386/");
+      //  singleOrderRetriever=ApiUtils.getSingleOrderDetails("orders/386/");
+
+        productCategoriesRetriever=ApiUtils.getProductCategory();
+
+        load_productCategories();
+
       //  productRetriever=ApiUtils.getProductDetails();
      //   loadOrder();
      //   loadProduct();
-        loadSingleOrder();
+     //   loadSingleOrder();
+    }
+
+    private void load_productCategories() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                productCategoriesRetriever.getProductCategory().enqueue(new Callback<Product_Categories_Retrofit>() {
+                    @Override
+                    public void onResponse(Call<Product_Categories_Retrofit> call, Response<Product_Categories_Retrofit> response) {
+
+                        if(response.isSuccessful()) {
+                            //mAdapter.updateAnswers(response.body().getItems());
+                            List<ProductCategory> productCategoryList=response.body().getProductCategories();
+
+                            if(productCategoryList!=null&&!productCategoryList.isEmpty()){
+                                Log.e("productCategoryList", "statusCode"+productCategoryList.get(0).getName());
+                                Log.e("productCategoryList", "statusCode"+productCategoryList.get(0).getName());
+                                Log.e("productCategoryList", "statusCode"+productCategoryList.get(0).getName());
+                                Log.e("productCategoryList", "statusCode"+productCategoryList.get(0).getName());
+                                Log.e("productCategoryList", "statusCode"+productCategoryList.get(0).getName());
+
+                            }
+
+
+
+                        }else {
+                            int statusCode  = response.code();
+                            Log.e("Single Order", "statusCode"+statusCode);
+                            Log.e("Single Order", "statusCode"+statusCode);
+                            Log.e("Single Order", "statusCode"+statusCode);
+                            Log.e("Single Order", "statusCode"+statusCode);
+                            Log.e("Single Order", "statusCode"+statusCode);
+                            Log.e("Single Order", "statusCode"+statusCode);
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Product_Categories_Retrofit> call, Throwable t) {
+                        // showErrorMessage();
+                        Log.d("Single Order", "===onFailure>");
+                        Log.e("Single Order", "===onFailure>");
+                        Log.w("Single Order", "===onFailure>");
+                        Log.i("Single Order", "===onFailure>");
+                    }
+                });
+            }
+        }).start();
     }
 
     private void loadSingleOrder() {
